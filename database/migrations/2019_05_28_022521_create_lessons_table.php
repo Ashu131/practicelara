@@ -17,6 +17,7 @@ class CreateLessonsTable extends Migration
             $table->increments('id');
             $table->string('title', 100)->nullable()->default('text');
             $table->text('body')->nullable();
+            $table->boolean('some_bool');
             $table->timestamps();
         });
     }

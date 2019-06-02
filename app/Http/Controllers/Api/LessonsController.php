@@ -16,12 +16,26 @@ class LessonsController extends Controller
     public function index()
     {
         // All() is bad
-        // Linking DB structure to the API Output
+        
         // NO way to signal headers response code
         $lessons= Lesson::all();
         return response()->json([
-            'data'  =>$lessons
+            'data'  => $this->transformCollection($lessons)
         ], 200);
+    }
+
+    private function transformCollection($lessons)
+    {
+        return array_map([$this,'transform'], $lessons->toArray());
+    }
+
+    private function transform($lesson)
+    {
+        return [
+            'Title' =>  $lesson['title'],
+            'Body'  =>  $lesson['body'],
+            'active'=>  (boolean) $lesson['some_bool']
+        ];
     }
 
     /**
@@ -61,7 +75,7 @@ class LessonsController extends Controller
         }
 
         return response()->json([
-            'data'  =>$lesson
+            'data'  =>$this->transform($lesson)
         ], 200);
     }
 
