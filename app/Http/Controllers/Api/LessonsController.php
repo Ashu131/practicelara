@@ -16,7 +16,6 @@ class LessonsController extends Controller
     public function index()
     {
         // All() is bad
-        // No way to attach meta data
         // Linking DB structure to the API Output
         // NO way to signal headers response code
         $lessons= Lesson::all();
