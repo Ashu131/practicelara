@@ -5,9 +5,24 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Lesson;
+use Acme\Transformers\LessonTransformer;
 
 class LessonsController extends Controller
 {
+    /**
+     * @var \Acme\Transformers\LessonTransformer
+     */
+    protected $lessonTransformer;
+
+    /**
+     * @param \Acme\Transformers\LessonTransformer|$lessonTransformer
+     * @return LessonTransformer
+     */
+    public function __construct(LessonTransformer $lessonTransformer)
+    {
+        $this->lessonTransformer = $lessonTransformer;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,26 +31,11 @@ class LessonsController extends Controller
     public function index()
     {
         // All() is bad
-        
         // NO way to signal headers response code
         $lessons= Lesson::all();
         return response()->json([
-            'data'  => $this->transformCollection($lessons)
+            'data'  => $this->lessonTransformer->transformCollection($lessons->all())
         ], 200);
-    }
-
-    private function transformCollection($lessons)
-    {
-        return array_map([$this,'transform'], $lessons->toArray());
-    }
-
-    private function transform($lesson)
-    {
-        return [
-            'Title' =>  $lesson['title'],
-            'Body'  =>  $lesson['body'],
-            'active'=>  (boolean) $lesson['some_bool']
-        ];
     }
 
     /**
@@ -75,7 +75,7 @@ class LessonsController extends Controller
         }
 
         return response()->json([
-            'data'  =>$this->transform($lesson)
+            'data'  =>$this->lessonTransformer->transform($lesson)
         ], 200);
     }
 
