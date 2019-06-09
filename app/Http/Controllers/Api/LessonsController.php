@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Model\Lesson;
 use Acme\Transformers\LessonTransformer;
 
-class LessonsController extends Controller
+class LessonsController extends ApiController
 {
     /**
      * @var \Acme\Transformers\LessonTransformer
@@ -33,9 +33,9 @@ class LessonsController extends Controller
         // All() is bad
         // NO way to signal headers response code
         $lessons= Lesson::all();
-        return response()->json([
+        return $this->respond([
             'data'  => $this->lessonTransformer->transformCollection($lessons->all())
-        ], 200);
+        ]);
     }
 
     /**
@@ -56,7 +56,7 @@ class LessonsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -69,14 +69,12 @@ class LessonsController extends Controller
     {
         $lesson= Lesson::find($id);
         if (!$lesson) {
-            return response()->json([
-                'error' =>'Lesson not found.'
-            ], 404);
+            return $this->respondNotFound('Lesson does not exist.');
         }
 
-        return response()->json([
+        return $this->respond([
             'data'  =>$this->lessonTransformer->transform($lesson)
-        ], 200);
+        ]);
     }
 
     /**
