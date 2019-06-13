@@ -21,6 +21,7 @@ class LessonsController extends ApiController
     public function __construct(LessonTransformer $lessonTransformer)
     {
         $this->lessonTransformer = $lessonTransformer;
+        $this->middleware('auth.basic',['only'=>'store']);
     }
 
     /**
@@ -56,7 +57,13 @@ class LessonsController extends ApiController
      */
     public function store(Request $request)
     {
-        
+        if (!$request->has('title') || !$request->has('body')) {
+            return $this->setStatusCode(422)->respondWithError('Parameters failed exception');
+        }
+
+        Lesson::create($request->all());
+
+        return $this->respondCreated('Lesson Created');
     }
 
     /**

@@ -46,4 +46,11 @@ class ApiController extends Controller
             ]
         ]);
     }
+
+    public function respondCreated($message)
+    {
+        return $this->setStatusCode(201)->respond([
+            'message'=>$message
+        ]);
+    }
 }
