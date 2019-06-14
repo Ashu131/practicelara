@@ -18,6 +18,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::resource('lessons', 'Api\LessonsController');
+    Route::resource('lessons', 'Api\LessonsController', ['only'=>['index', 'show', 'store']]);
+    Route::get('lessons/{lesson}/tags', 'Api\TagsController@index');
+    Route::resource('tags', 'Api\TagsController',['only'=>['index','show']]);
     
 });
